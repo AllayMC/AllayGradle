@@ -1,0 +1,11 @@
+{
+  "entrance": "org.allaymc.gradle.sample.TestPlugin",
+  "name": "TestPlugin",
+  "description": "Just test.",
+  "authors": [
+    "Cdm2883"
+  ],
+  "version": "0.1.0-alpha",
+  "dependencies": [],
+  "website": "https://github.com/MineBuilders/AllayGradle"
+}
