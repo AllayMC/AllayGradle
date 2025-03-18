@@ -1,5 +1,10 @@
 [versions]
+allay-gradle = "0.1.0-alpha"
+
+kotlin = "2.1.10"
 
 [libraries]
 
 [plugins]
+allay-gradle = { id = "org.allaymc.gradle", version.ref = "allay-gradle" }
+kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }

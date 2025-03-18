@@ -1,4 +1,4 @@
-rootProject.name = "gradle-multi-module-project-template"
+rootProject.name = "AllayGradle"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {
@@ -15,4 +15,5 @@ dependencyResolutionManagement {
     }
 }
 
-//include(":")
+includeBuild("plugin")
+include(":sample")
