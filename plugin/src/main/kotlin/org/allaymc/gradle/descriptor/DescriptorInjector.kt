@@ -1,13 +1,21 @@
 package org.allaymc.gradle.descriptor
 
-import kotlinx.serialization.*
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.InternalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
-import kotlinx.serialization.json.*
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.JsonElement
+import kotlinx.serialization.json.buildJsonObject
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.serializer
 import org.allaymc.gradle.AllayExtension
 import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
+import org.gradle.language.jvm.tasks.ProcessResources
+import java.io.File
 
 @OptIn(ExperimentalSerializationApi::class)
 private val Serialization = Json {
@@ -17,7 +25,9 @@ private val Serialization = Json {
 @OptIn(InternalSerializationApi::class)
 fun descriptorInject(project: Project, extension: AllayExtension) {
     val isExtension = extension.isExtension.get()
-    project.tasks.named("processResources") {
+    project.tasks.named("processResources", ProcessResources::class.java) {
+        fun File.resolvePlaceholder() = resolve(".placeholder")
+        from(project.file(temporaryDir.resolvePlaceholder()).apply { createNewFile() })
         @Suppress("UNCHECKED_CAST")
         doLast {
             val fileName = "${if (isExtension) "extension" else "plugin"}.json"
@@ -39,6 +49,7 @@ fun descriptorInject(project: Project, extension: AllayExtension) {
 
             val mapper = MapSerializer(String.serializer(), JsonElement.serializer())
             fileProcessed.writeText(Serialization.encodeToString(mapper, baseJson + extraJson))
+            fileProcessed.parentFile.resolvePlaceholder().delete()
         }
     }
 }
