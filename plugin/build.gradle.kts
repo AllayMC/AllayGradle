@@ -6,6 +6,8 @@ plugins {
     alias(libs.plugins.kotlinx.serialization)
 }
 
+group = "org.allaymc.gradle"
+
 repositories {
     mavenCentral()
     gradlePluginPortal()
@@ -24,6 +26,7 @@ gradlePlugin {
             implementationClass = "org.allaymc.gradle.AllayPlugin"
         }
     }
+    isAutomatedPublishing = false
 }
 
 publishing {
