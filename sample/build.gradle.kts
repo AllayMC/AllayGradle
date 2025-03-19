@@ -6,11 +6,11 @@ plugins {
 group = "org.allaymc.gradle.sample"
 
 allay {
-    version = "0.1.2"
+    version = "0.2.0"
     plugin {
         description = "Test plugin of AllayGradle!"
-        authors += "MineBuilder"
+        authors += "Cdm2883"
         version = libs.versions.allay.gradle
-        website = "MineBuilders/AllayGradle"
+        website = "AllayMC/AllayGradle"
     }
 }

@@ -23,26 +23,14 @@ class AllayPlugin : Plugin<Project> {
     }
 
     private fun afterEvaluate(project: Project, extension: AllayExtension) {
-        val logger = project.logger
         val isExtension = extension.isExtension.get()
-        val isUseServer = extension.useServer.get()
-
-        val apiVersion = extension.version.orNull ?: extension.api.orNull ?: if (isExtension || isUseServer)
-            extension.server.orNull ?: "master-SNAPSHOT"
-        else "master-SNAPSHOT".also {
-            logger.warn("Api version is not specified, defaulting to master-SNAPSHOT!")
-        }
-
-        val serverVersion = extension.version.orNull ?: extension.server.orNull ?: if (!isExtension && !isUseServer)
-            apiVersion
-        else "master-SNAPSHOT".also {
-            logger.warn("Server version is not specified, defaulting to master-SNAPSHOT!")
-        }
+        val version = extension.version.orNull ?: "master-SNAPSHOT"
+        val apiOnly = extension.apiOnly.get()
 
         project.dependencies {
-            val notation = if (isExtension || isUseServer)
-                "${Constant.DEPENDENCY_GROUP}:server:$serverVersion"
-            else "${Constant.DEPENDENCY_GROUP}:api:$apiVersion"
+            val notation = if (isExtension || !apiOnly)
+                "${Constant.DEPENDENCY_GROUP}:server:$version"
+            else "${Constant.DEPENDENCY_GROUP}:api:$version"
             add("compileOnly", notation)
         }
 
@@ -54,15 +42,18 @@ class AllayPlugin : Plugin<Project> {
         } else {
             createShadowJarImplement(project)
         }
+
         project.tasks.register<RunServerTask>("runServer") {
             group = Constant.TASK_GROUP
             dependsOn(shadowJarTask)
             shadowJar.set(shadowJarTask.flatMap { it.archiveFile })
             putExtension.set(isExtension)
-            this.serverVersion.set(serverVersion)
+            this.version.set(version)
         }
 
-        if (extension.descriptorInject.get()) descriptorInject(project, extension)
+        if (extension.descriptorInjection.get()) {
+            descriptorInject(project, extension)
+        }
     }
 
     private fun createShadowJarImplement(project: Project) = project.tasks.register("shadowJar", Jar::class.java) {

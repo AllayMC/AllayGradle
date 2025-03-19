@@ -12,13 +12,10 @@ import javax.inject.Inject
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 abstract class AllayExtension @Inject constructor(objects: ObjectFactory) {
     val isExtension: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
-    val useServer: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
-
     val version: Property<String> = objects.property(String::class.java)
-    val api: Property<String> = objects.property(String::class.java)
-    val server: Property<String> = objects.property(String::class.java)
+    val apiOnly: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
 
-    val descriptorInject: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
+    val descriptorInjection: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
     var entrance: String?
         get() = (if (isExtension.get()) extension.entrance else plugin.entrance).orNull
         set(value) = (if (isExtension.get()) extension.entrance else plugin.entrance).set(value)

@@ -15,7 +15,7 @@ abstract class RunServerTask : JavaExec() {
     abstract val putExtension: Property<Boolean>
 
     @get:Input
-    abstract val serverVersion: Property<String>
+    abstract val version: Property<String>
 
     @get:OutputDirectory
     val cwd: Provider<Directory> = project.layout.buildDirectory.dir("run")
@@ -32,7 +32,7 @@ abstract class RunServerTask : JavaExec() {
         val dir = cwd.resolve(if (putExtension.orNull == true) "extensions" else "plugins").apply { mkdirs() }
         jar.copyTo(File(dir, jar.name), overwrite = true)
 
-        val notation = "${Constant.DEPENDENCY_GROUP}:server:${serverVersion.get()}"
+        val notation = "${Constant.DEPENDENCY_GROUP}:server:${version.get()}"
         val server = project.dependencies.create(notation)
         classpath = project.files(project.configurations.detachedConfiguration(server).resolve())
         workingDir = cwd
