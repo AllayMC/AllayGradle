@@ -8,9 +8,11 @@ group = "org.allaymc.gradle.sample"
 allay {
     version = "0.2.0"
     plugin {
+        name = "TestPlugin"
+        entrance = "org.allaymc.gradle.sample.TestPlugin"
         description = "Test plugin of AllayGradle!"
         authors += "Cdm2883"
         version = libs.versions.allay.gradle
-        website = "AllayMC/AllayGradle"
+        website = "https://github.com/AllayMC/AllayGradle"
     }
 }

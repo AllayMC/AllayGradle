@@ -1,9 +1,0 @@
-{
-  "entrance": ".TestPlugin",
-  "name": "TestPlugin",
-  "authors": [
-    "Cdm2883"
-  ],
-  "dependencies": [],
-  "website": "https://github.com/${it}"
-}
