@@ -7,7 +7,7 @@ allay {
     version = "0.2.0"
     plugin {
         name = "TestPlugin"
-        entrance = ".TestPlugin"
+        entrance = "org.allaymc.gradle.sample.TestPlugin"
         description = "Test plugin of AllayGradle!"
         authors += "Cdm2883"
         version = libs.versions.allay.gradle
