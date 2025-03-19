@@ -1,5 +1,6 @@
 package org.allaymc.gradle
 
+import org.allaymc.gradle.descriptor.descriptorInject
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSetContainer
@@ -8,7 +9,7 @@ import org.gradle.kotlin.dsl.*
 
 class AllayPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        val extension = project.extensions.create("allay", AllayExtension::class.java, project)
+        val extension = project.extensions.create("allay", AllayExtension::class.java, project.objects)
 
         project.repositories {
             mavenCentral()
@@ -23,7 +24,7 @@ class AllayPlugin : Plugin<Project> {
 
     private fun afterEvaluate(project: Project, extension: AllayExtension) {
         val logger = project.logger
-        val isExtension = extension.extension.get()
+        val isExtension = extension.isExtension.get()
         val isUseServer = extension.useServer.get()
 
         val apiVersion = extension.version.orNull ?: extension.api.orNull ?: if (isExtension || isUseServer)
@@ -39,8 +40,10 @@ class AllayPlugin : Plugin<Project> {
         }
 
         project.dependencies {
-            if (isExtension || isUseServer) add("compileOnly", "${Constant.DEPENDENCY_GROUP}:server:$serverVersion")
-            else add("compileOnly", "${Constant.DEPENDENCY_GROUP}:api:$apiVersion")
+            val notation = if (isExtension || isUseServer)
+                "${Constant.DEPENDENCY_GROUP}:server:$serverVersion"
+            else "${Constant.DEPENDENCY_GROUP}:api:$apiVersion"
+            add("compileOnly", notation)
         }
 
         val shadowJarTask = if (
@@ -58,6 +61,8 @@ class AllayPlugin : Plugin<Project> {
             putExtension.set(isExtension)
             this.serverVersion.set(serverVersion)
         }
+
+        if (extension.descriptorInject.get()) descriptorInject(project, extension)
     }
 
     private fun createShadowJarImplement(project: Project) = project.tasks.register("shadowJar", Jar::class.java) {

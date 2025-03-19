@@ -29,7 +29,7 @@ abstract class RunServerTask : JavaExec() {
     override fun exec() {
         val jar = shadowJar.get().asFile
         val cwd = cwd.get().asFile
-        val dir = cwd.resolve(if (putExtension.get()) "extensions" else "plugins").apply { mkdirs() }
+        val dir = cwd.resolve(if (putExtension.orNull == true) "extensions" else "plugins").apply { mkdirs() }
         jar.copyTo(File(dir, jar.name), overwrite = true)
 
         val notation = "${Constant.DEPENDENCY_GROUP}:server:${serverVersion.get()}"

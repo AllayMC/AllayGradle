@@ -2,16 +2,17 @@ plugins {
     `java-gradle-plugin`
     `kotlin-dsl`
     alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.kotlinx.serialization)
 }
 
 repositories {
-    google()
     mavenCentral()
     gradlePluginPortal()
 }
 
 dependencies {
     implementation(gradleApi())
+    implementation(libs.kotlinx.serialization.json)
 }
 
 gradlePlugin {
