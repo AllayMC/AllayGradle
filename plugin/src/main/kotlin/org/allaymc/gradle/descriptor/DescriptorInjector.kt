@@ -1,14 +1,15 @@
 package org.allaymc.gradle.descriptor
 
-import kotlinx.serialization.InternalSerializationApi
-import kotlinx.serialization.KSerializer
+import kotlinx.serialization.*
+import kotlinx.serialization.builtins.MapSerializer
+import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.*
-import kotlinx.serialization.serializer
 import org.allaymc.gradle.AllayExtension
 import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
 
+@OptIn(ExperimentalSerializationApi::class)
 private val Serialization = Json {
     explicitNulls = false
 }
@@ -36,7 +37,8 @@ fun descriptorInject(project: Project, extension: AllayExtension) {
                 extra.get().forEach { (k, v) -> put(k, Serialization.encodeToJsonElement(v::class.serializer() as KSerializer<Any>, v)) }
             }
 
-            fileProcessed.writeText(Serialization.encodeToString(baseJson + extraJson))
+            val mapper = MapSerializer(String.serializer(), JsonElement.serializer())
+            fileProcessed.writeText(Serialization.encodeToString(mapper, baseJson + extraJson))
         }
     }
 }
