@@ -3,8 +3,6 @@ plugins {
     alias(libs.plugins.allay.gradle)
 }
 
-group = "org.allaymc.gradle.sample"
-
 allay {
     version = "0.2.0"
     plugin {

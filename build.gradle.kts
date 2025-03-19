@@ -10,6 +10,8 @@ subprojects {
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
 
+    group = "org.allaymc.gradle"
+
     publishing {
         repositories {
             // Jitpack requires us to publish artifacts to local maven repo
