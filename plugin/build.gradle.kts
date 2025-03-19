@@ -26,6 +26,8 @@ gradlePlugin {
             implementationClass = "org.allaymc.gradle.AllayPlugin"
         }
     }
+    // We use `maven-publish` because jitpack expects us using this plugin,
+    // so the publishing task in `java-gradle-plugin` should be disabled
     isAutomatedPublishing = false
 }
 
