@@ -65,7 +65,7 @@ private val SemVerRegex =
 private fun String?.ensureVersion(project: Project, property: Property<String>) =
     ((this ?: project.version.toString().takeUnless { it == "unspecified" }).template(property)
         ?: error("Version is not defined!")).takeIf { it.matches(SemVerRegex) }
-        ?: error("Version doesn't valid! (Use https://semver.org/)")
+        ?: error("Version is invalid! (Please check https://semver.org/)")
 
 private fun String?.template(property: Property<String>) =
     this?.replace("\${it}", property.orNull ?: "") ?: property.orNull
