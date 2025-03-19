@@ -6,6 +6,10 @@ plugins {
     alias(libs.plugins.kotlin.jvm) apply false
 }
 
+tasks.jar {
+    enabled = false
+}
+
 subprojects {
     apply(plugin = "java-library")
     apply(plugin = "maven-publish")
