@@ -16,3 +16,7 @@ allay {
         website = "https://github.com/AllayMC/AllayGradle"
     }
 }
+
+tasks.publish {
+    enabled = false
+}
