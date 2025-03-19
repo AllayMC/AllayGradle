@@ -20,7 +20,7 @@ gradlePlugin {
         create("allayGradlePlugin") {
             id = libs.plugins.allay.gradle.get().pluginId
             version = libs.versions.allay.gradle.get()
-            implementationClass = "org.allaymc.gradle.AllayPlugin"
+            implementationClass = "org.allaymc.gradle.plugin.AllayPlugin"
         }
     }
     // We use `maven-publish` because jitpack expects us using this plugin,

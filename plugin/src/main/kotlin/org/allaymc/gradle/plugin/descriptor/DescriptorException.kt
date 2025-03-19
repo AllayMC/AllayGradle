@@ -1,4 +1,4 @@
-package org.allaymc.gradle.descriptor
+package org.allaymc.gradle.plugin.descriptor
 
 internal class DescriptorException(message: String) : Exception(message)
 

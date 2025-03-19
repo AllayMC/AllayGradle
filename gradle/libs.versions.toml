@@ -8,6 +8,6 @@ kotlinx-serialization = "1.5.0"
 kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization" }
 
 [plugins]
-allay-gradle = { id = "org.allaymc.gradle", version.ref = "allay-gradle" }
+allay-gradle = { id = "org.allaymc.gradle.plugin", version.ref = "allay-gradle" }
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 kotlinx-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }

@@ -1,4 +1,4 @@
-package org.allaymc.gradle
+package org.allaymc.gradle.plugin
 
 object Constant {
     const val TASK_GROUP = "allay"

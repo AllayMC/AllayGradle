@@ -1,4 +1,4 @@
-package org.allaymc.gradle.descriptor
+package org.allaymc.gradle.plugin.descriptor
 
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.InternalSerializationApi
@@ -10,7 +10,7 @@ import kotlinx.serialization.json.JsonElement
 import kotlinx.serialization.json.buildJsonObject
 import kotlinx.serialization.json.jsonObject
 import kotlinx.serialization.serializer
-import org.allaymc.gradle.AllayExtension
+import org.allaymc.gradle.plugin.AllayExtension
 import org.gradle.api.Project
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property

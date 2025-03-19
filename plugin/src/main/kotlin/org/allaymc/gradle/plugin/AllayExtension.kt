@@ -1,6 +1,6 @@
-package org.allaymc.gradle
+package org.allaymc.gradle.plugin
 
-import org.allaymc.gradle.descriptor.PluginDescriptor
+import org.allaymc.gradle.plugin.descriptor.PluginDescriptor
 import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty

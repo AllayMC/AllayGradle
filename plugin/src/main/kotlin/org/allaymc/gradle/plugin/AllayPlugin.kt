@@ -1,6 +1,6 @@
-package org.allaymc.gradle
+package org.allaymc.gradle.plugin
 
-import org.allaymc.gradle.descriptor.descriptorInject
+import org.allaymc.gradle.plugin.descriptor.descriptorInject
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.SourceSetContainer

@@ -1,4 +1,4 @@
-package org.allaymc.gradle
+package org.allaymc.gradle.plugin
 
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFileProperty
