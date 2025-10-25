@@ -23,36 +23,33 @@ private val Serialization = Json {
 }
 
 @OptIn(InternalSerializationApi::class)
-fun descriptorInject(project: Project, extension: AllayExtension) {
-    val isExtension = extension.isExtension.get()
+fun descriptorInject(project: Project, extension: AllayExtension) =
     project.tasks.named("processResources", ProcessResources::class.java) {
         fun File.resolvePlaceholder() = resolve(".placeholder")
         from(project.file(temporaryDir.resolvePlaceholder()).apply { createNewFile() })
         @Suppress("UNCHECKED_CAST")
         doLast {
-            val fileName = "${if (isExtension) "extension" else "plugin"}.json"
+            val fileName = "plugin.json"
             val fileOrigin = project.file("src/main/resources/$fileName")
             val fileProcessed = project.file("${project.layout.buildDirectory.get()}/resources/main/$fileName")
 
             val content = runCatching { fileOrigin.readText() }.getOrNull() ?: "{}"
-            val serializer = (if (isExtension) ExtensionDescriptor::class else PluginDescriptor::class).serializer()
+            val serializer = PluginDescriptor::class.serializer()
             val parsed = Serialization.decodeFromString(serializer, content)
 
-            val processed = (parsed as? ExtensionDescriptor)?.inject(project, extension.extension)
-                ?: (parsed as PluginDescriptor).inject(project, extension.plugin)
-
+            val processed = parsed.inject(project, extension.plugin)
             val baseJson = Serialization.encodeToJsonElement(serializer as KSerializer<Any>, processed).jsonObject
             val extraJson = buildJsonObject {
-                val extra = if (isExtension) extension.extension.extra else extension.plugin.extra
-                extra.get().forEach { (k, v) -> put(k, Serialization.encodeToJsonElement(v::class.serializer() as KSerializer<Any>, v)) }
+                extension.plugin.extra.get().forEach { (k, v) ->
+                    put(k, Serialization.encodeToJsonElement(v::class.serializer() as KSerializer<Any>, v))
+                }
             }
 
             val mapper = MapSerializer(String.serializer(), JsonElement.serializer())
             fileProcessed.writeText(Serialization.encodeToString(mapper, baseJson + extraJson))
             fileProcessed.parentFile.resolvePlaceholder().delete()
         }
-    }
-}
+    }.let {}
 
 private fun PluginDescriptor.inject(project: Project, extension: AllayExtension.Plugin) = copy(
     entrance = (entrance ?: extension.entrance.orNull).ensureEntrance(project),
@@ -65,10 +62,6 @@ private fun PluginDescriptor.inject(project: Project, extension: AllayExtension.
     website = website.template(extension.website),
 )
 
-private fun ExtensionDescriptor.inject(project: Project, extension: AllayExtension.Extension) = copy(
-    entrance = (entrance ?: extension.entrance.orNull).ensureEntrance(project),
-)
-
 private fun String?.ensureEntrance(project: Project) = this
     ?.takeIf { it.isNotEmpty() }
     ?.let { if (it.startsWith(".")) "${project.group}$it" else it }
@@ -76,6 +69,7 @@ private fun String?.ensureEntrance(project: Project) = this
 
 private val SemVerRegex =
     Regex("^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?\$")
+
 private fun String?.ensureVersion(project: Project, property: Property<String>) =
     ((this ?: project.version.toString().takeUnless { it == "unspecified" }).template(property)
         ?: error("Version is not defined!")).takeIf { it.matches(SemVerRegex) }

@@ -23,7 +23,7 @@ class AllayPlugin : Plugin<Project> {
     }
 
     private fun afterEvaluate(project: Project, extension: AllayExtension) {
-        val dependency = if (extension.isExtension.get() || !extension.apiOnly.get())
+        val dependency = if (!extension.apiOnly.get())
             "${Constant.DEPENDENCY_GROUP}:server:${extension.server.get()}"
         else "${Constant.DEPENDENCY_GROUP}:api:${extension.api.get()}"
         project.dependencies {
@@ -42,11 +42,7 @@ class AllayPlugin : Plugin<Project> {
         project.tasks.register<RunServerTask>("runServer") {
             group = Constant.TASK_GROUP
             dependsOn(shadowJarTask)
-
-            val shadowJar = shadowJarTask.flatMap { it.archiveFile }
-            if (extension.isExtension.get()) extensionJar.set(shadowJar)
-            else pluginJar.set(shadowJar)
-
+            pluginJar.set(shadowJarTask.flatMap { it.archiveFile })
             serverVersion.set(extension.server.get())
         }
 

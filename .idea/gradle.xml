@@ -20,9 +20,7 @@
           <set>
             <option value="$PROJECT_DIR$" />
             <option value="$PROJECT_DIR$/plugin" />
-            <option value="$PROJECT_DIR$/samples" />
-            <option value="$PROJECT_DIR$/samples/test-extension" />
-            <option value="$PROJECT_DIR$/samples/test-plugin" />
+            <option value="$PROJECT_DIR$/sample" />
           </set>
         </option>
       </GradleProjectSettings>

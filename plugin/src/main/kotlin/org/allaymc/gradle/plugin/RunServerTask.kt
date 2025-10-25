@@ -12,10 +12,6 @@ abstract class RunServerTask : JavaExec() {
     @get:Optional
     abstract val pluginJar: RegularFileProperty
 
-    @get:InputFile
-    @get:Optional
-    abstract val extensionJar: RegularFileProperty
-
     @get:Input
     abstract val serverVersion: Property<String>
 
@@ -30,7 +26,6 @@ abstract class RunServerTask : JavaExec() {
     @TaskAction
     override fun exec() {
         pluginJar.loadTo("plugins")
-        extensionJar.loadTo("extensions")
 
         val notation = "${Constant.DEPENDENCY_GROUP}:server:${serverVersion.get()}"
         val server = project.dependencies.create(notation)

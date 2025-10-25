@@ -5,31 +5,25 @@ import org.gradle.api.model.ObjectFactory
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.MapProperty
 import org.gradle.api.provider.Property
-import org.gradle.kotlin.dsl.assign
 import org.gradle.kotlin.dsl.mapProperty
 import javax.inject.Inject
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 @ExtensionMarker
 abstract class AllayExtension @Inject constructor(objects: ObjectFactory) {
-    val isExtension: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
     val api: Property<String?> = objects.property(String::class.java)
     val server: Property<String> = objects.property(String::class.java).convention("+")
     val apiOnly: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
 
     val descriptorInjection: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
     var entrance: String?
-        get() = (if (isExtension.get()) extension.entrance else plugin.entrance).orNull
-        set(value) = (if (isExtension.get()) extension.entrance else plugin.entrance).set(value)
+        get() = plugin.entrance.orNull
+        set(value) = plugin.entrance.set(value)
 
     val plugin: Plugin = objects.newInstance(Plugin::class.java)
-    fun plugin(action: Plugin.() -> Unit) = plugin.action().also { isExtension = false }
-
-    val extension: Extension = objects.newInstance(Extension::class.java)
-    fun extension(action: Extension.() -> Unit) = extension.action().also { isExtension = true }
+    fun plugin(action: Plugin.() -> Unit) = plugin.action()
 
     abstract class Config(objects: ObjectFactory) {
-        val entrance: Property<String> = objects.property(String::class.java)
         val extra = objects.mapProperty<String, Any>()
 
         operator fun <K : Any, V> MapProperty<K, V>.set(key: K, value: V?) {
@@ -39,6 +33,7 @@ abstract class AllayExtension @Inject constructor(objects: ObjectFactory) {
     }
 
     abstract class Plugin @Inject constructor(objects: ObjectFactory) : Config(objects) {
+        val entrance: Property<String> = objects.property(String::class.java)
         val name: Property<String> = objects.property(String::class.java)
         val version: Property<String> = objects.property(String::class.java)
         val authors: ListProperty<String> = objects.listProperty(String::class.java).convention(emptyList())
