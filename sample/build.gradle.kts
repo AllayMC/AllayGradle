@@ -4,7 +4,7 @@ plugins {
 }
 
 allay {
-    version = "0.2.0"
+    api = "0.15.0"
     plugin {
         name = "TestPlugin"
         entrance = "org.allaymc.gradle.sample.TestPlugin"

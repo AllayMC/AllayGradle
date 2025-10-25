@@ -9,13 +9,15 @@ import java.io.File
 
 abstract class RunServerTask : JavaExec() {
     @get:InputFile
-    abstract val shadowJar: RegularFileProperty
+    @get:Optional
+    abstract val pluginJar: RegularFileProperty
+
+    @get:InputFile
+    @get:Optional
+    abstract val extensionJar: RegularFileProperty
 
     @get:Input
-    abstract val putExtension: Property<Boolean>
-
-    @get:Input
-    abstract val version: Property<String>
+    abstract val serverVersion: Property<String>
 
     @get:OutputDirectory
     val cwd: Provider<Directory> = project.layout.buildDirectory.dir("run")
@@ -27,16 +29,19 @@ abstract class RunServerTask : JavaExec() {
 
     @TaskAction
     override fun exec() {
-        val jar = shadowJar.get().asFile
-        val cwd = cwd.get().asFile
-        val dir = cwd.resolve(if (putExtension.orNull == true) "extensions" else "plugins").apply { mkdirs() }
-        jar.copyTo(File(dir, jar.name), overwrite = true)
+        pluginJar.loadTo("plugins")
+        extensionJar.loadTo("extensions")
 
-        val notation = "${Constant.DEPENDENCY_GROUP}:server:${version.get()}"
+        val notation = "${Constant.DEPENDENCY_GROUP}:server:${serverVersion.get()}"
         val server = project.dependencies.create(notation)
         classpath = project.files(project.configurations.detachedConfiguration(server).resolve())
-        workingDir = cwd
-
+        workingDir = cwd.get().asFile
         super.exec()
+    }
+
+    private fun RegularFileProperty.loadTo(name: String) {
+        val file = orNull?.asFile ?: return
+        val dest = cwd.get().asFile.resolve(name).apply { mkdirs() }
+        file.copyTo(File(dest, file.name), overwrite = true)
     }
 }

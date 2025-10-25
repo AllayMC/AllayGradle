@@ -13,7 +13,7 @@ class AllayPlugin : Plugin<Project> {
 
         project.repositories {
             mavenCentral()
-            maven("https://jitpack.io/")
+            maven("https://www.jetbrains.com/intellij-repository/releases/")
             maven("https://repo.opencollab.dev/maven-releases/")
             maven("https://repo.opencollab.dev/maven-snapshots/")
             maven("https://storehouse.okaeri.eu/repository/maven-public/")
@@ -23,15 +23,11 @@ class AllayPlugin : Plugin<Project> {
     }
 
     private fun afterEvaluate(project: Project, extension: AllayExtension) {
-        val isExtension = extension.isExtension.get()
-        val version = extension.version.orNull ?: "master-SNAPSHOT"
-        val apiOnly = extension.apiOnly.get()
-
+        val dependency = if (extension.isExtension.get() || !extension.apiOnly.get())
+            "${Constant.DEPENDENCY_GROUP}:server:${extension.server.get()}"
+        else "${Constant.DEPENDENCY_GROUP}:api:${extension.api.get()}"
         project.dependencies {
-            val notation = if (isExtension || !apiOnly)
-                "${Constant.DEPENDENCY_GROUP}:server:$version"
-            else "${Constant.DEPENDENCY_GROUP}:api:$version"
-            add("compileOnly", notation)
+            add("compileOnly", dependency)
         }
 
         val shadowJarTask = if (
@@ -46,9 +42,12 @@ class AllayPlugin : Plugin<Project> {
         project.tasks.register<RunServerTask>("runServer") {
             group = Constant.TASK_GROUP
             dependsOn(shadowJarTask)
-            shadowJar.set(shadowJarTask.flatMap { it.archiveFile })
-            putExtension.set(isExtension)
-            this.version.set(version)
+
+            val shadowJar = shadowJarTask.flatMap { it.archiveFile }
+            if (extension.isExtension.get()) extensionJar.set(shadowJar)
+            else pluginJar.set(shadowJar)
+
+            serverVersion.set(extension.server.get())
         }
 
         if (extension.descriptorInjection.get()) {
