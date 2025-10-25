@@ -59,6 +59,7 @@ private fun PluginDescriptor.inject(project: Project, extension: AllayExtension.
     name = name.template(extension.name),
     version = version.ensureVersion(project, extension.version),
     authors = authors + extension.authors,
+    api = api.template(extension.api),
     description = description.template(extension.description),
     dependencies = dependencies + extension.dependencies,
     website = website.template(extension.website),

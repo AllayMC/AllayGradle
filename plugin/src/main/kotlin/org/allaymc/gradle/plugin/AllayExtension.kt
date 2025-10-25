@@ -10,6 +10,7 @@ import org.gradle.kotlin.dsl.mapProperty
 import javax.inject.Inject
 
 @Suppress("MemberVisibilityCanBePrivate", "unused")
+@ExtensionMarker
 abstract class AllayExtension @Inject constructor(objects: ObjectFactory) {
     val isExtension: Property<Boolean> = objects.property(Boolean::class.java).convention(false)
     val api: Property<String?> = objects.property(String::class.java)
@@ -42,6 +43,7 @@ abstract class AllayExtension @Inject constructor(objects: ObjectFactory) {
         val version: Property<String> = objects.property(String::class.java)
         val authors: ListProperty<String> = objects.listProperty(String::class.java).convention(emptyList())
         fun authors(vararg names: String) = authors.addAll(names.toList())
+        val api: Property<String> = objects.property(String::class.java)
         val description: Property<String> = objects.property(String::class.java)
         val dependencies: ListProperty<PluginDescriptor.Dependency> =
             objects.listProperty(PluginDescriptor.Dependency::class.java).convention(emptyList())
