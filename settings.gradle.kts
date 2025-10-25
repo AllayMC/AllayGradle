@@ -15,4 +15,5 @@ dependencyResolutionManagement {
 }
 
 includeBuild("plugin")
-include(":sample")
+include(":samples:test-plugin")
+include(":samples:test-extension")
