@@ -1,6 +1,6 @@
 plugins {
     `kotlin-dsl`
-    alias(libs.plugins.publish)
+    alias(libs.plugins.gradle.plugin.publish)
     alias(libs.plugins.kotlin.jvm)
     alias(libs.plugins.kotlinx.serialization)
 }
@@ -18,6 +18,7 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 }
 
+@Suppress("UnstableApiUsage")
 gradlePlugin {
     website = "https://github.com/AllayMC/AllayGradle"
     vcsUrl = "https://github.com/AllayMC/AllayGradle.git"
