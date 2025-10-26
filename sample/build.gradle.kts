@@ -3,16 +3,19 @@ plugins {
     alias(libs.plugins.allay.gradle)
 }
 
-group = "org.allaymc.gradle.sample"  // for entrance splicing
+// for entrance splicing
+group = "org.allaymc.gradle.sample"
+version = libs.versions.allay.gradle.get()
+description = "Test plugin of AllayGradle!"
 
 allay {
     api = "0.15.0"
     plugin {
         name = "TestPlugin"
-        entrance = ".TestPlugin"  // "org.allaymc.gradle.sample.TestPlugin"
-        description = "Test plugin of AllayGradle!"
+        // "org.allaymc.gradle.sample.TestPlugin"
+        entrance = ".TestPlugin"
+        apiVersion = ">=0.15.0"
         authors += "Cdm2883"
-        version = libs.versions.allay.gradle
         website = "https://github.com/AllayMC/AllayGradle"
     }
 }

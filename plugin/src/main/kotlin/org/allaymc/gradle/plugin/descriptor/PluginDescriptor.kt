@@ -10,7 +10,7 @@ data class PluginDescriptor(
     val version: String?,
     val authors: List<String>?,
     @SerialName("api_version")
-    val api: String?,
+    val apiVersion: String?,
     val description: String?,
     val dependencies: List<Dependency>?,
     val website: String?,

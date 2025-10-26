@@ -53,11 +53,11 @@ fun descriptorInject(project: Project, extension: AllayExtension) =
 
 private fun PluginDescriptor.inject(project: Project, extension: AllayExtension.Plugin) = copy(
     entrance = (entrance ?: extension.entrance.orNull).ensureEntrance(project),
-    name = name.template(extension.name),
+    name = name.ensureName(project, extension.name),
     version = version.ensureVersion(project, extension.version),
     authors = authors + extension.authors,
-    api = api.template(extension.api),
-    description = description.template(extension.description),
+    apiVersion = apiVersion.template(extension.apiVersion),
+    description = description.ensureDescription(project, extension.description),
     dependencies = dependencies + extension.dependencies,
     website = website.template(extension.website),
 )
@@ -66,6 +66,12 @@ private fun String?.ensureEntrance(project: Project) = this
     ?.takeIf { it.isNotEmpty() }
     ?.let { if (it.startsWith(".")) "${project.group}$it" else it }
     ?: error("Entrance is not defined!")
+
+private fun String?.ensureName(project: Project, property: Property<String>) =
+    template(property) ?: project.name.takeUnless { it == "unspecified" } ?: error("Name is not defined!")
+
+private fun String?.ensureDescription(project: Project, property: Property<String>) =
+    template(property) ?: project.description ?: ""
 
 private val SemVerRegex =
     Regex("^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?\$")

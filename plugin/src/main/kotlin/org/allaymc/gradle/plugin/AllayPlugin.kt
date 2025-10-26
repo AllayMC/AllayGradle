@@ -53,7 +53,7 @@ class AllayPlugin : Plugin<Project> {
 
     private fun createShadowJarImplement(project: Project) = project.tasks.register("shadowJar", Jar::class.java) {
         group = Constant.TASK_GROUP
-        archiveClassifier.set("shadow")
+        archiveClassifier.set("shaded")
         val sourceSets = project.extensions.getByType(SourceSetContainer::class.java)
         from(sourceSets.getByName("main").output)
         val runtimeClasspath = project.configurations.getByName("runtimeClasspath")

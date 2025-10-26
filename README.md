@@ -5,31 +5,40 @@ A Gradle plugin designed to boost Allay plugin development!
 ## Usage
 
 ```kt
+
+group = "org.allaymc.gradle.sample"
+version = "0.1.0"
+description = "Test plugin for AllayGradle!"
+
 allay {
-    // API dependency version (required if `apiOnly = true`).
+    // API version (required if `apiOnly = true`).
     api = "0.15.0"
 
-    // Specify server version for `runServer` and dependency version when `apiOnly = false`.
-    // Set to null for the latest version.
-    server = null
-
-    // Depend on the server module instead of the API module for server-specific features.
+    // Set this field to `false` to access the server module to use the internal APIs. However, this is not
+    // recommended as internal APIs can change at any time.
+    // The default value is `true`.
     apiOnly = true
 
-    // Configure the plugin descriptor.
+    // Specify the server version used in the `runServer` task. This will also be the dependency version if
+    // `apiOnly` is set to `false`. If this field is set to `null`, the latest server version will be used.
+    // The default value is `null`.
+    server = null
+
+    // Configure the plugin descriptor (plugin.json).
     plugin {
         entrance = "org.allaymc.gradle.sample.TestPlugin"
-        // Or use relative path if project's group is set.
+        // Or use the relative path if the project's group is set.
         // entrance = ".TestPlugin"
 
-        name = "TestPlugin"
-        version = "0.1.0-alpha"
+        apiVersion = ">=0.15.0"
         authors += "Cdm2883"
-        api = ">= 0.15.0"
-        description = "Test plugin for AllayGradle!"
         website = "https://github.com/AllayMC/AllayGradle"
+        
+        // By default, the following fields are set to the project's group, version, and description.
+        // However, you can override them if you want.
+        // name = "..."
+        // version = "..."
+        // description = "..."
     }
 }
 ```
-
-> See a full example in [sample/build.gradle.kts](sample/build.gradle.kts).

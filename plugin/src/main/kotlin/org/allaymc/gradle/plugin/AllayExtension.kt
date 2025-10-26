@@ -38,7 +38,7 @@ abstract class AllayExtension @Inject constructor(objects: ObjectFactory) {
         val version: Property<String> = objects.property(String::class.java)
         val authors: ListProperty<String> = objects.listProperty(String::class.java).convention(emptyList())
         fun authors(vararg names: String) = authors.addAll(names.toList())
-        val api: Property<String> = objects.property(String::class.java)
+        val apiVersion: Property<String> = objects.property(String::class.java)
         val description: Property<String> = objects.property(String::class.java)
         val dependencies: ListProperty<PluginDescriptor.Dependency> =
             objects.listProperty(PluginDescriptor.Dependency::class.java).convention(emptyList())
