@@ -14,7 +14,7 @@ allay {
         name = "TestPlugin"
         // "org.allaymc.gradle.sample.TestPlugin"
         entrance = ".TestPlugin"
-        apiVersion = ">=0.15.0"
+        api = ">= 0.15.0"
         authors += "Cdm2883"
         website = "https://github.com/AllayMC/AllayGradle"
     }
