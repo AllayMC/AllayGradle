@@ -1,23 +1,8 @@
 name: Publish
 
 on:
-  push:
-    branches: [ "main" ]
-    paths:
-      - .github/workflows/gradle.yml
-      - gradle.properties
-      - build.gradle.kts
-      - settings.gradle.kts
-      - plugin/src/**
-      - sample/src/**
-  pull_request:
-    paths:
-      - .github/workflows/gradle.yml
-      - gradle.properties
-      - build.gradle.kts
-      - settings.gradle.kts
-      - plugin/src/**
-      - sample/src/**
+  release:
+    types: [ published ]
 
 jobs:
   publish:
@@ -32,7 +17,6 @@ jobs:
         with:
           java-version: '21'
           distribution: 'zulu'
-
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v5
@@ -50,7 +34,7 @@ jobs:
           ./gradlew build
 
       - name: Publish to Gradle Plugin Portal
-        if: success() && github.event_name == 'push' && github.repository == 'AllayMC/AllayGradle' && contains(github.ref_name, 'main')
+        if: success() && github.repository == 'AllayMC/AllayGradle'
         run: ./gradlew :plugin:publishPlugins
         env:
           GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
