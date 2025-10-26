@@ -1,0 +1,57 @@
+name: Publish
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - .github/workflows/gradle.yml
+      - gradle.properties
+      - build.gradle.kts
+      - settings.gradle.kts
+      - plugin/src/**
+      - sample/src/**
+  pull_request:
+    paths:
+      - .github/workflows/gradle.yml
+      - gradle.properties
+      - build.gradle.kts
+      - settings.gradle.kts
+      - plugin/src/**
+      - sample/src/**
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Setup Java
+        uses: actions/setup-java@v5
+        with:
+          java-version: '21'
+          distribution: 'zulu'
+
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v5
+        with:
+          gradle-version: wrapper
+          cache-overwrite-existing: true
+          cache-read-only: false
+          build-scan-publish: true
+          build-scan-terms-of-use-url: "https://gradle.com/terms-of-service"
+          build-scan-terms-of-use-agree: "yes"
+
+      - name: Build
+        run: |
+          chmod +x gradlew
+          ./gradlew build
+
+      - name: Publish to Gradle Plugin Portal
+        if: success() && github.event_name == 'push' && github.repository == 'AllayMC/AllayGradle' && contains(github.ref_name, 'main')
+        run: ./gradlew :plugin:publishPlugins
+        env:
+          GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}
+          GRADLE_PUBLISH_SECRET: ${{ secrets.GRADLE_PUBLISH_SECRET }}

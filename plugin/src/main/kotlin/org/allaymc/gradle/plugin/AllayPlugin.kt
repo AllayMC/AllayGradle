@@ -13,6 +13,7 @@ class AllayPlugin : Plugin<Project> {
 
         project.repositories {
             mavenCentral()
+            maven("https://central.sonatype.com/repository/maven-snapshots/")
             maven("https://www.jetbrains.com/intellij-repository/releases/")
             maven("https://repo.opencollab.dev/maven-releases/")
             maven("https://repo.opencollab.dev/maven-snapshots/")
