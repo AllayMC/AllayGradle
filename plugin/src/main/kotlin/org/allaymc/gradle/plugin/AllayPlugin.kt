@@ -13,7 +13,6 @@ class AllayPlugin : Plugin<Project> {
 
         project.repositories {
             mavenCentral()
-            maven("https://central.sonatype.com/repository/maven-snapshots/")
             maven("https://www.jetbrains.com/intellij-repository/releases/")
             maven("https://repo.opencollab.dev/maven-releases/")
             maven("https://repo.opencollab.dev/maven-snapshots/")
@@ -24,9 +23,18 @@ class AllayPlugin : Plugin<Project> {
     }
 
     private fun afterEvaluate(project: Project, extension: AllayExtension) {
+        val api = extension.api.orNull
+        val server = extension.server.orNull
+
+        if ((api?.contains("SNAPSHOT", ignoreCase = true) == true) ||
+            (server?.contains("SNAPSHOT", ignoreCase = true) == true)
+        ) {
+            project.repositories.maven("https://central.sonatype.com/repository/maven-snapshots/")
+        }
+
         val dependency = if (!extension.apiOnly.get())
-            "${Constant.DEPENDENCY_GROUP}:server:${extension.server.get()}"
-        else "${Constant.DEPENDENCY_GROUP}:api:${extension.api.get()}"
+            "${Constant.DEPENDENCY_GROUP}:server:${server}"
+        else "${Constant.DEPENDENCY_GROUP}:api:${api}"
         project.dependencies {
             add("compileOnly", dependency)
         }
@@ -44,7 +52,7 @@ class AllayPlugin : Plugin<Project> {
             group = Constant.TASK_GROUP
             dependsOn(shadowJarTask)
             pluginJar.set(shadowJarTask.flatMap { it.archiveFile })
-            serverVersion.set(extension.server.get())
+            serverVersion.set(server)
         }
 
         if (extension.descriptorInjection.get()) {
