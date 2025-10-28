@@ -38,28 +38,8 @@ jobs:
           chmod +x gradlew
           ./gradlew build
 
-  publish:
-    runs-on: ubuntu-latest
-    timeout-minutes: 10
-    needs: build
-    if: github.event_name == 'release' && github.event.action == 'published' && github.repository == 'AllayMC/AllayGradle'
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v5
-
-      - name: Setup Java
-        uses: actions/setup-java@v5
-        with:
-          java-version: '21'
-          distribution: 'zulu'
-
-      - name: Setup Gradle
-        uses: gradle/actions/setup-gradle@v5
-        with:
-          gradle-version: wrapper
-
       - name: Publish to Gradle Plugin Portal
+        if: github.event_name == 'release' && github.event.action == 'published' && github.repository == 'AllayMC/AllayGradle'
         run: ./gradlew :plugin:publishPlugins
         env:
           GRADLE_PUBLISH_KEY: ${{ secrets.GRADLE_PUBLISH_KEY }}

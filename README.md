@@ -1,7 +1,6 @@
 # Allay Gradle Plugin
 
 [![Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/org.allaymc.gradle.plugin)](https://plugins.gradle.org/plugin/org.allaymc.gradle.plugin)
-[![CI](https://github.com/AllayMC/AllayGradle/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/AllayMC/AllayGradle/actions/workflows/gradle.yml?query=branch:main+event:push)
 [![License](https://img.shields.io/github/license/allaymc/allaygradle)](LICENSE)
 
 A Gradle plugin designed to boost Allay plugin development!
