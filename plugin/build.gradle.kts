@@ -18,7 +18,6 @@ dependencies {
     implementation(libs.kotlinx.serialization.json)
 }
 
-@Suppress("UnstableApiUsage")
 gradlePlugin {
     website = "https://github.com/AllayMC/AllayGradle"
     vcsUrl = "https://github.com/AllayMC/AllayGradle.git"
@@ -27,7 +26,7 @@ gradlePlugin {
             id = libs.plugins.allay.gradle.get().pluginId
             displayName = "Gradle plugin for AllayMC"
             description = "A Gradle plugin designed to boost Allay plugin development!"
-            tags = listOf("minecraft", "allaymc", "minecraft-plugin")
+            tags = listOf("minecraft", "allaymc", "minecraft-plugin", "bedrock")
             implementationClass = "org.allaymc.gradle.plugin.AllayPlugin"
         }
     }

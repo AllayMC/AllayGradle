@@ -31,6 +31,8 @@ allay {
         // entrance = ".TestPlugin"
 
         apiVersion = ">=0.15.0"
+        // `api = ">=0.15.0" is equivalent here.
+        
         authors += "Cdm2883"
         website = "https://github.com/AllayMC/AllayGradle"
         
