@@ -1,10 +1,25 @@
 # Allay Gradle Plugin
 
+[![Plugin Portal](https://img.shields.io/gradle-plugin-portal/v/org.allaymc.gradle.plugin)](https://plugins.gradle.org/plugin/org.allaymc.gradle.plugin)
+[![CI](https://github.com/AllayMC/AllayGradle/actions/workflows/build.yml/badge.svg?branch=main&event=push)](https://github.com/AllayMC/AllayGradle/actions/workflows/gradle.yml?query=branch:main+event:push)
+[![License](https://img.shields.io/github/license/allaymc/allaygradle)](LICENSE)
+
 A Gradle plugin designed to boost Allay plugin development!
 
-## Usage
+## Feature
+
+- Automatically configure the maven dependencies and repositories needed to develop allay plugins.
+- Automatically generate the plugin descriptor (plugin.json) based on the project's metadata.
+- Use the `runServer` task to quickly build and debug your plugin.
+
+## Quick Start
+
+It is pretty simple to use this plugin. Just add the following code to your `build.gradle.kts` file:
 
 ```kt
+plugins {
+    id("org.allaymc.gradle.plugin").version("0.1.0")
+}
 
 group = "org.allaymc.gradle.sample"
 version = "0.1.0"
@@ -44,3 +59,22 @@ allay {
     }
 }
 ```
+
+## Run Server Task
+
+The plugin provides a `runServer` task to quickly build and debug your plugin, which will do the following things:
+
+- Build your plugin into a shadow jar.
+- Copy the generated shadow jar from the build output to the test server's plugins directory (`build/run/plugins`).
+- Launch a test server in the `build/run/server` directory. Your plugin will be loaded along with the test server.
+
+## Shadow Jar Task
+
+The plugin provides a basic `shadowJar` task if neither `com.gradle.up` nor `com.github.johnrengelman.shadow` plugin is
+applied, which handles the fundamental jar building and dependency shading functionality.
+
+For more information about the Allay project, please refer to https://docs.allaymc.org/.
+
+## 🎫 License
+
+Copyright **© 2023-2025 AllayMC**, all rights reserved. Project content is open source under the LGPL-3.0 license.
