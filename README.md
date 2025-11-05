@@ -17,7 +17,7 @@ It is pretty simple to use this plugin. Just add the following code to your `bui
 
 ```kt
 plugins {
-    id("org.allaymc.gradle.plugin").version("0.1.0")
+    id("org.allaymc.gradle.plugin").version("0.1.1")
 }
 
 group = "org.allaymc.gradle.sample"
@@ -26,7 +26,7 @@ description = "Test plugin for AllayGradle!"
 
 allay {
     // API version (required if `apiOnly = true`).
-    api = "0.15.0"
+    api = "0.16.0"
 
     // Set this field to `false` to access the server module to use the internal APIs. However, this is not
     // recommended as internal APIs can change at any time.
@@ -44,8 +44,8 @@ allay {
         // Or use the relative path if the project's group is set.
         // entrance = ".TestPlugin"
 
-        apiVersion = ">=0.15.0"
-        // `api = ">=0.15.0" is equivalent here.
+        apiVersion = ">=0.16.0"
+        // `api = ">=0.16.0" is equivalent here.
         
         authors += "Cdm2883"
         website = "https://github.com/AllayMC/AllayGradle"
