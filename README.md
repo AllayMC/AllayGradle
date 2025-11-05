@@ -17,6 +17,7 @@ It is pretty simple to use this plugin. Just add the following code to your `bui
 
 ```kt
 plugins {
+    id("java-library")
     id("org.allaymc.gradle.plugin").version("0.1.1")
 }
 
