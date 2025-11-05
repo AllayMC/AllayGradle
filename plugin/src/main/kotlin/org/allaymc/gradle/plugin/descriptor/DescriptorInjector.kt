@@ -84,5 +84,5 @@ private fun String?.ensureVersion(project: Project, property: Property<String>) 
 private fun String?.template(property: Property<String>) =
     this?.replace("\${it}", property.orNull ?: "") ?: property.orNull
 
-private operator fun <T> List<T>?.plus(property: ListProperty<T>) =
+private operator fun <T : Any> List<T>?.plus(property: ListProperty<T>) =
     (this ?: emptyList()) + property.get()

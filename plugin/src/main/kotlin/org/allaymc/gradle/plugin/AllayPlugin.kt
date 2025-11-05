@@ -16,7 +16,15 @@ class AllayPlugin : Plugin<Project> {
             maven("https://www.jetbrains.com/intellij-repository/releases/")
             maven("https://repo.opencollab.dev/maven-releases/")
             maven("https://repo.opencollab.dev/maven-snapshots/")
-            maven("https://storehouse.okaeri.eu/repository/maven-public/")
+            maven("https://storehouse.okaeri.eu/repository/maven-public/") {
+                content {
+                    // Storehouse's repository returns http status code 500 instead of 404 for non-existent
+                    // dependencies, which will cause the build to fail when using a dynamic version. To solve
+                    // this problem, we explicitly indicate that there is no allay-api in this repository as
+                    // well as allay-server
+                    excludeGroup("org.allaymc.allay")
+                }
+            }
         }
 
         project.afterEvaluate { afterEvaluate(project, extension) }

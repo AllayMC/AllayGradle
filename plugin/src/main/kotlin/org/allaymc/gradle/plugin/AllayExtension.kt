@@ -11,7 +11,7 @@ import javax.inject.Inject
 @Suppress("MemberVisibilityCanBePrivate", "unused")
 @ExtensionMarker
 abstract class AllayExtension @Inject constructor(objects: ObjectFactory) {
-    val api: Property<String?> = objects.property(String::class.java)
+    val api: Property<String> = objects.property(String::class.java)
     val server: Property<String> = objects.property(String::class.java).convention("+")
     val apiOnly: Property<Boolean> = objects.property(Boolean::class.java).convention(true)
 
@@ -26,7 +26,7 @@ abstract class AllayExtension @Inject constructor(objects: ObjectFactory) {
     abstract class Config(objects: ObjectFactory) {
         val extra = objects.mapProperty<String, Any>()
 
-        operator fun <K : Any, V> MapProperty<K, V>.set(key: K, value: V?) {
+        operator fun <K : Any, V : Any> MapProperty<K, V>.set(key: K, value: V?) {
             @Suppress("NULLABILITY_MISMATCH_BASED_ON_JAVA_ANNOTATIONS")
             if (value != null) put(key, value)
         }
@@ -54,7 +54,7 @@ abstract class AllayExtension @Inject constructor(objects: ObjectFactory) {
 
         val website: Property<String> = objects.property(String::class.java)
 
-        operator fun <T> ListProperty<T>.plusAssign(item: T) = addAll(item)
+        operator fun <T : Any> ListProperty<T>.plusAssign(item: T) = addAll(item)
     }
 
     abstract class Extension @Inject constructor(objects: ObjectFactory) : Config(objects)
