@@ -77,9 +77,8 @@ private val SemVerRegex =
     Regex("^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?\$")
 
 private fun String?.ensureVersion(project: Project, property: Property<String>) =
-    ((this ?: project.version.toString().takeUnless { it == "unspecified" }).template(property)
-        ?: error("Version is not defined!")).takeIf { it.matches(SemVerRegex) }
-        ?: error("Version is invalid! (Please check https://semver.org/)")
+    (template(property) ?: project.version.toString().takeUnless { it == "unspecified" } ?: error("Version is not defined!"))
+        .takeIf { it.matches(SemVerRegex) } ?: error("Version is invalid! (Please check https://semver.org/)")
 
 private fun String?.template(property: Property<String>) =
     this?.replace("\${it}", property.orNull ?: "") ?: property.orNull
