@@ -39,7 +39,12 @@ allay {
     // The default value is `null`.
     server = null
 
+    // Whether to generate the plugin descriptor (plugin.json).
+    // The default value is `true`.
+    generatePluginDescriptor = true
+
     // Configure the plugin descriptor (plugin.json).
+    // This would be ignored if `generatePluginDescriptor` is set to `false`.
     plugin {
         entrance = "org.allaymc.gradle.sample.TestPlugin"
         // Or use the relative path if the project's group is set.

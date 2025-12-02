@@ -1,5 +1,6 @@
-package org.allaymc.gradle.plugin
+package org.allaymc.gradle.plugin.tasks
 
+import org.allaymc.gradle.plugin.Constants
 import org.gradle.api.file.Directory
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.Property
@@ -19,15 +20,16 @@ abstract class RunServerTask : JavaExec() {
     val cwd: Provider<Directory> = project.layout.buildDirectory.dir("run")
 
     init {
+        group = Constants.TASK_GROUP
         outputs.upToDateWhen { false }
-        mainClass.set(Constant.SERVER_MAIN_CLASS)
+        mainClass.set(Constants.SERVER_MAIN_CLASS)
     }
 
     @TaskAction
     override fun exec() {
         pluginJar.loadTo("plugins")
 
-        val notation = "${Constant.DEPENDENCY_GROUP}:server:${serverVersion.get()}"
+        val notation = "${Constants.DEPENDENCY_GROUP}:server:${serverVersion.get()}"
         val server = project.dependencies.create(notation)
         classpath = project.files(project.configurations.detachedConfiguration(server).resolve())
         workingDir = cwd.get().asFile

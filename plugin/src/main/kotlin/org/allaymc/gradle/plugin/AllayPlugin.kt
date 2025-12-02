@@ -1,15 +1,20 @@
 package org.allaymc.gradle.plugin
 
-import org.allaymc.gradle.plugin.descriptor.descriptorInject
+import org.allaymc.gradle.plugin.dsl.AllayDslExtension
+import org.allaymc.gradle.plugin.tasks.GeneratePluginDescriptorTask
+import org.allaymc.gradle.plugin.tasks.RunServerTask
+import org.allaymc.gradle.plugin.tasks.ShadowJarTask
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.SourceSetContainer
 import org.gradle.jvm.tasks.Jar
-import org.gradle.kotlin.dsl.*
+import org.gradle.kotlin.dsl.dependencies
+import org.gradle.kotlin.dsl.maven
+import org.gradle.kotlin.dsl.register
+import org.gradle.kotlin.dsl.repositories
 
 class AllayPlugin : Plugin<Project> {
     override fun apply(project: Project) {
-        val extension = project.extensions.create("allay", AllayExtension::class.java, project.objects)
+        val extension = project.extensions.create("allay", AllayDslExtension::class.java, project.objects)
 
         project.repositories {
             mavenCentral()
@@ -30,7 +35,7 @@ class AllayPlugin : Plugin<Project> {
         project.afterEvaluate { afterEvaluate(project, extension) }
     }
 
-    private fun afterEvaluate(project: Project, extension: AllayExtension) {
+    private fun afterEvaluate(project: Project, extension: AllayDslExtension) {
         val api = extension.api.orNull
         val server = extension.server.orNull
 
@@ -41,8 +46,8 @@ class AllayPlugin : Plugin<Project> {
         }
 
         val dependency = if (!extension.apiOnly.get())
-            "${Constant.DEPENDENCY_GROUP}:server:${server}"
-        else "${Constant.DEPENDENCY_GROUP}:api:${api}"
+            "${Constants.DEPENDENCY_GROUP}:server:${server}"
+        else "${Constants.DEPENDENCY_GROUP}:api:${api}"
         project.dependencies {
             add("compileOnly", dependency)
         }
@@ -53,31 +58,36 @@ class AllayPlugin : Plugin<Project> {
         ) {
             project.tasks.named("shadowJar", Jar::class.java)
         } else {
-            createShadowJarImplement(project)
+            project.tasks.register<ShadowJarTask>("shadowJar")
         }
 
         project.tasks.register<RunServerTask>("runServer") {
-            group = Constant.TASK_GROUP
             dependsOn(shadowJarTask)
             pluginJar.set(shadowJarTask.flatMap { it.archiveFile })
             serverVersion.set(server)
         }
 
-        if (extension.descriptorInjection.get()) {
-            descriptorInject(project, extension)
-        }
-    }
+        if (extension.generatePluginDescriptor.get()) {
+            val generatePluginDescriptorTask = project.tasks.register<GeneratePluginDescriptorTask>("generatePluginDescriptor") {
+                outputFile.set(project.layout.buildDirectory.file("resources/main/plugin.json"))
 
-    private fun createShadowJarImplement(project: Project) = project.tasks.register("shadowJar", Jar::class.java) {
-        group = Constant.TASK_GROUP
-        archiveClassifier.set("shaded")
-        val sourceSets = project.extensions.getByType(SourceSetContainer::class.java)
-        from(sourceSets.getByName("main").output)
-        val runtimeClasspath = project.configurations.getByName("runtimeClasspath")
-        from({
-            runtimeClasspath.filter { it.exists() }.map {
-                if (it.isDirectory) it else project.zipTree(it)
+                pluginEntrance.set(extension.plugin.entrance)
+                pluginName.set(extension.plugin.name)
+                pluginVersion.set(extension.plugin.version)
+                pluginAuthors.set(extension.plugin.authors)
+                pluginApiVersion.set(extension.plugin.apiVersion)
+                pluginDescription.set(extension.plugin.description)
+                pluginDependencies.set(extension.plugin.dependencies)
+                pluginWebsite.set(extension.plugin.website)
+
+                projectName.set(project.name)
+                projectVersion.set(project.version.toString())
+                projectDescription.set(project.description)
             }
-        })
+
+            project.tasks.named("processResources") {
+                dependsOn(generatePluginDescriptorTask)
+            }
+        }
     }
 }

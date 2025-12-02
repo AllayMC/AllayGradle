@@ -1,5 +1,5 @@
 [versions]
-allay-gradle = "0.1.2"
+allay-gradle = "0.2.0-SNAPSHOT"
 gradle-plugin-publish = "2.0.0"
 kotlin = "1.9.23"
 kotlinx-serialization = "1.5.0"
