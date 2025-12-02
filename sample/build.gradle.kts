@@ -12,7 +12,7 @@ allay {
     plugin {
         name = "TestPlugin"
         entrance = ".TestPlugin"
-        authors += "Cdm2883"
+        authors = listOf("Cdm2883", "daoge_cmd")
         website = "https://github.com/AllayMC/AllayGradle"
     }
 }

@@ -14,5 +14,4 @@ data class PluginDescriptor(
     val description: String?,
     val dependencies: List<PluginDependency>?,
     val website: String?,
-) {
-}
+) : java.io.Serializable

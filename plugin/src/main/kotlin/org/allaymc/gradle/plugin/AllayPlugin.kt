@@ -53,8 +53,8 @@ class AllayPlugin : Plugin<Project> {
         }
 
         val shadowJarTask = if (
-            project.plugins.hasPlugin("com.gradleup.shadow")
-            || project.plugins.hasPlugin("com.github.johnrengelman.shadow")
+            project.plugins.hasPlugin("com.gradleup.shadow") ||
+            project.plugins.hasPlugin("com.github.johnrengelman.shadow")
         ) {
             project.tasks.named("shadowJar", Jar::class.java)
         } else {
@@ -68,22 +68,23 @@ class AllayPlugin : Plugin<Project> {
         }
 
         if (extension.generatePluginDescriptor.get()) {
-            val generatePluginDescriptorTask = project.tasks.register<GeneratePluginDescriptorTask>("generatePluginDescriptor") {
-                outputFile.set(project.layout.buildDirectory.file("resources/main/plugin.json"))
+            val generatePluginDescriptorTask =
+                project.tasks.register<GeneratePluginDescriptorTask>("generatePluginDescriptor") {
+                    outputFile.set(project.layout.buildDirectory.file("resources/main/plugin.json"))
 
-                pluginEntrance.set(extension.plugin.entrance)
-                pluginName.set(extension.plugin.name)
-                pluginVersion.set(extension.plugin.version)
-                pluginAuthors.set(extension.plugin.authors)
-                pluginApiVersion.set(extension.plugin.apiVersion)
-                pluginDescription.set(extension.plugin.description)
-                pluginDependencies.set(extension.plugin.dependencies)
-                pluginWebsite.set(extension.plugin.website)
+                    pluginEntrance.set(extension.plugin.entrance)
+                    pluginName.set(extension.plugin.name)
+                    pluginVersion.set(extension.plugin.version)
+                    pluginAuthors.set(extension.plugin.authors)
+                    pluginApiVersion.set(extension.plugin.apiVersion)
+                    pluginDescription.set(extension.plugin.description)
+                    pluginDependencies.set(extension.plugin.dependencies)
+                    pluginWebsite.set(extension.plugin.website)
 
-                projectName.set(project.name)
-                projectVersion.set(project.version.toString())
-                projectDescription.set(project.description)
-            }
+                    projectName.set(project.name)
+                    projectVersion.set(project.version.toString())
+                    projectDescription.set(project.description)
+                }
 
             project.tasks.named("processResources") {
                 dependsOn(generatePluginDescriptorTask)

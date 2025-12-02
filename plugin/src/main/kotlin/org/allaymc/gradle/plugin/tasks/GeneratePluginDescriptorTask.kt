@@ -1,7 +1,6 @@
 package org.allaymc.gradle.plugin.tasks
 
 import kotlinx.serialization.ExperimentalSerializationApi
-import kotlinx.serialization.InternalSerializationApi
 import kotlinx.serialization.builtins.MapSerializer
 import kotlinx.serialization.builtins.serializer
 import kotlinx.serialization.json.Json
@@ -10,7 +9,6 @@ import kotlinx.serialization.json.jsonObject
 import org.allaymc.gradle.plugin.data.PluginDependency
 import org.allaymc.gradle.plugin.data.PluginDescriptor
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
 import org.gradle.api.file.RegularFileProperty
 import org.gradle.api.provider.ListProperty
 import org.gradle.api.provider.Property
@@ -25,7 +23,6 @@ private val Serialization = Json {
     prettyPrint = true
 }
 
-@OptIn(InternalSerializationApi::class)
 abstract class GeneratePluginDescriptorTask : DefaultTask() {
     @get:OutputFile
     abstract val outputFile: RegularFileProperty
@@ -82,9 +79,12 @@ abstract class GeneratePluginDescriptorTask : DefaultTask() {
 
     private fun createDescriptor(): PluginDescriptor {
         return PluginDescriptor(
-            pluginEntrance.get().ensureEntrance(project),
+            pluginEntrance.get().takeIf { it.isNotEmpty() }
+                ?.let { if (it.startsWith(".")) "${project.group}$it" else it }
+                ?: error("Entrance is not defined!"),
             pluginName.orNull ?: projectName.get().takeUnless { it == "unspecified" } ?: error("Name is not defined!"),
-            (pluginVersion.orNull ?: projectVersion.get().takeUnless { it == "unspecified" } ?: error("Version is not defined!"))
+            (pluginVersion.orNull ?: projectVersion.get().takeUnless { it == "unspecified" }
+            ?: error("Version is not defined!"))
                 .takeIf { it.matches(semVerRegex) } ?: error("Version is invalid! (Please check https://semver.org/)"),
             pluginAuthors.getOrElse(emptyList()),
             pluginApiVersion.orNull,
@@ -94,15 +94,10 @@ abstract class GeneratePluginDescriptorTask : DefaultTask() {
         )
     }
 
-    private fun String?.ensureEntrance(project: Project) = this
-        ?.takeIf { it.isNotEmpty() }
-        ?.let { if (it.startsWith(".")) "${project.group}$it" else it }
-        ?: error("Entrance is not defined!")
-
     private val semVerRegex =
         Regex("^(0|[1-9]\\d*)\\.(0|[1-9]\\d*)\\.(0|[1-9]\\d*)(?:-((?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*)(?:\\.(?:0|[1-9]\\d*|\\d*[a-zA-Z-][0-9a-zA-Z-]*))*))?(?:\\+([0-9a-zA-Z-]+(?:\\.[0-9a-zA-Z-]+)*))?$")
 
-    internal class GenDescriptorException(message: String) : Exception(message)
+    internal class GeneratePluginDescriptorException(message: String) : Exception(message)
 
-    internal fun error(message: String): Nothing = throw GenDescriptorException(message)
+    internal fun error(message: String): Nothing = throw GeneratePluginDescriptorException(message)
 }
